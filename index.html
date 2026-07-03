@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aritra Maxxing — a layered junior-year operating console for Aritra Bhattacharya (UGA Terry MIS '27): rush tracker, clubs, recruiting pipeline, skills matrix, and weekly cadence.">
+<meta name="color-scheme" content="light dark">
+<title>Aritra Maxxing · Junior-Year Operating Plan</title>
+<style>
+  html,body{margin:0;padding:0;}
+</style>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#FAF7F6; --surface:#FFFFFF; --surface-2:#F4EFED; --surface-3:#EEE7E4;
+    --ink:#1B1517; --ink-2:#4A4145; --muted:#867C7F;
+    --line:#E7DFDD; --line-2:#D6CCCA;
+    --accent:#9E1B32; --accent-2:#C6314B; --accent-soft:#F6E5E8; --accent-ink:#FFFFFF;
+    --gold:#9C7220;
+    --good:#2E8B63; --good-bg:#E4F1EA;
+    --warn:#B57614; --warn-bg:#F7ECD6;
+    --crit:#C43C3C; --crit-bg:#F8E3E3;
+    --info:#3B6FB0; --info-bg:#E4ECF6;
+    --shadow:0 1px 2px rgba(27,21,23,.05), 0 8px 24px -12px rgba(27,21,23,.18);
+    --font-display:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,'Times New Roman',serif;
+    --font-sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,'Cascadia Code','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+    --r:12px; --r-sm:8px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#121013; --surface:#1A171B; --surface-2:#221E23; --surface-3:#2A252B;
+      --ink:#F2ECEE; --ink-2:#C6BCC0; --muted:#958B90;
+      --line:#2C262C; --line-2:#3B343B;
+      --accent:#E24961; --accent-2:#F06A80; --accent-soft:#331319; --accent-ink:#1A0A0E;
+      --gold:#D9B15A;
+      --good:#46B183; --good-bg:#14271F;
+      --warn:#E0A63C; --warn-bg:#2C2313;
+      --crit:#E56B6B; --crit-bg:#2E1717;
+      --info:#6699E0; --info-bg:#141F2E;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121013; --surface:#1A171B; --surface-2:#221E23; --surface-3:#2A252B;
+    --ink:#F2ECEE; --ink-2:#C6BCC0; --muted:#958B90;
+    --line:#2C262C; --line-2:#3B343B;
+    --accent:#E24961; --accent-2:#F06A80; --accent-soft:#331319; --accent-ink:#1A0A0E;
+    --gold:#D9B15A;
+    --good:#46B183; --good-bg:#14271F;
+    --warn:#E0A63C; --warn-bg:#2C2313;
+    --crit:#E56B6B; --crit-bg:#2E1717;
+    --info:#6699E0; --info-bg:#141F2E;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.6);
+  }
+  :root[data-theme="light"]{
+    --bg:#FAF7F6; --surface:#FFFFFF; --surface-2:#F4EFED; --surface-3:#EEE7E4;
+    --ink:#1B1517; --ink-2:#4A4145; --muted:#867C7F;
+    --line:#E7DFDD; --line-2:#D6CCCA;
+    --accent:#9E1B32; --accent-2:#C6314B; --accent-soft:#F6E5E8; --accent-ink:#FFFFFF;
+    --gold:#9C7220;
+    --good:#2E8B63; --good-bg:#E4F1EA;
+    --warn:#B57614; --warn-bg:#F7ECD6;
+    --crit:#C43C3C; --crit-bg:#F8E3E3;
+    --info:#3B6FB0; --info-bg:#E4ECF6;
+    --shadow:0 1px 2px rgba(27,21,23,.05), 0 8px 24px -12px rgba(27,21,23,.18);
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px;}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  h1,h2,h3{margin:0;text-wrap:balance;}
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+  .eyebrow{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);font-weight:600;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,var(--surface-2),var(--bg));}
+  #stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;
+    pointer-events:none;}
+  .hero .wrap{position:relative;z-index:1;padding-top:56px;padding-bottom:44px;}
+  .hero-top{display:flex;justify-content:space-between;align-items:center;gap:16px;
+    flex-wrap:wrap;margin-bottom:34px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);
+    font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .brand b{color:var(--ink);}
+  .compass{width:26px;height:26px;flex:none;}
+  .hero h1{font-family:var(--font-display);font-weight:700;line-height:1.02;
+    font-size:clamp(2.5rem,6vw,4.1rem);letter-spacing:-.01em;margin:.35rem 0 .5rem;}
+  .hero h1 em{font-style:italic;color:var(--accent);}
+  .lede{max-width:60ch;color:var(--ink-2);font-size:1.06rem;margin:0 0 22px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px;}
+  .chip{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.03em;
+    padding:5px 10px;border:1px solid var(--line-2);border-radius:100px;
+    color:var(--ink-2);background:var(--surface);}
+  .chip.accent{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+
+  .counters{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:560px;}
+  .counter{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:14px 16px;box-shadow:var(--shadow);}
+  .counter .num{font-family:var(--font-mono);font-size:2rem;font-weight:600;
+    line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;}
+  .counter .lbl{font-size:.74rem;color:var(--muted);margin-top:6px;line-height:1.3;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:46px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+    margin-bottom:22px;flex-wrap:wrap;}
+  .sec-head h2{font-family:var(--font-display);font-size:1.7rem;font-weight:700;
+    letter-spacing:-.01em;margin-top:6px;}
+  .sec-head .note{font-size:.85rem;color:var(--muted);max-width:42ch;text-align:right;}
+  .sec-num{font-family:var(--font-mono);color:var(--muted);font-size:.7rem;
+    letter-spacing:.16em;}
+
+  /* ---------- KPI ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:16px;position:relative;overflow:hidden;}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--accent);opacity:.85;}
+  .kpi .k-num{font-family:var(--font-mono);font-size:1.7rem;font-weight:600;
+    line-height:1;font-variant-numeric:tabular-nums;}
+  .kpi .k-lbl{font-size:.76rem;color:var(--muted);margin-top:8px;line-height:1.35;}
+  .kpi.g::before{background:var(--good);} .kpi.w::before{background:var(--warn);}
+  .kpi.i::before{background:var(--info);} .kpi.gold::before{background:var(--gold);}
+
+  /* ---------- ROADMAP ---------- */
+  .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .phase{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px;display:flex;flex-direction:column;gap:10px;position:relative;}
+  .phase .p-tag{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);}
+  .phase h3{font-family:var(--font-display);font-size:1.15rem;}
+  .phase .when{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);}
+  .phase ul{margin:2px 0 0;padding-left:16px;color:var(--ink-2);font-size:.86rem;
+    display:flex;flex-direction:column;gap:5px;}
+  .phase li::marker{color:var(--accent);}
+  .phase .win{margin-top:auto;padding-top:10px;border-top:1px dashed var(--line-2);
+    font-size:.78rem;color:var(--ink-2);}
+  .phase .win b{color:var(--good);font-family:var(--font-mono);}
+  .phase.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+
+  /* ---------- TABLES ---------- */
+  .rail{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);
+    background:var(--surface);box-shadow:var(--shadow);}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:.86rem;}
+  thead th{position:sticky;top:0;background:var(--surface-3);text-align:left;
+    font-family:var(--font-mono);font-size:.68rem;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-2);font-weight:600;
+    padding:12px 14px;border-bottom:1px solid var(--line-2);white-space:nowrap;z-index:2;}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;
+    color:var(--ink-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:var(--surface-2);}
+  td .primary{color:var(--ink);font-weight:600;}
+  td .sub{display:block;color:var(--muted);font-size:.78rem;margin-top:3px;}
+  td.mono,.mono td{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+  .num-cell{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  /* pills */
+  .pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);
+    font-size:.68rem;letter-spacing:.04em;padding:3px 9px;border-radius:100px;
+    white-space:nowrap;border:1px solid transparent;font-weight:600;}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9;}
+  .pill.good{color:var(--good);background:var(--good-bg);}
+  .pill.warn{color:var(--warn);background:var(--warn-bg);}
+  .pill.crit{color:var(--crit);background:var(--crit-bg);}
+  .pill.info{color:var(--info);background:var(--info-bg);}
+  .pill.neutral{color:var(--muted);background:var(--surface-3);}
+  .pill.accent{color:var(--accent);background:var(--accent-soft);}
+  .pri{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.04em;font-weight:600;}
+  .pri.p1{color:var(--accent);} .pri.p2{color:var(--warn);} .pri.p3{color:var(--muted);}
+  .stars-rate{color:var(--gold);letter-spacing:2px;font-size:.8rem;}
+
+  /* ---------- SKILLS ---------- */
+  .bar{height:7px;border-radius:100px;background:var(--surface-3);overflow:hidden;
+    min-width:96px;margin-top:7px;}
+  .bar > i{display:block;height:100%;border-radius:100px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1);}
+  .lvl{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);}
+
+  /* ---------- CADENCE ---------- */
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
+  .day{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:12px;display:flex;flex-direction:column;gap:8px;min-height:150px;}
+  .day .dname{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);
+    padding-bottom:7px;}
+  .day .theme{font-family:var(--font-display);font-size:.98rem;color:var(--ink);}
+  .day ul{margin:0;padding-left:15px;font-size:.78rem;color:var(--ink-2);
+    display:flex;flex-direction:column;gap:4px;}
+  .day.rest{background:var(--surface-2);}
+  .day.rest .theme{color:var(--accent);}
+
+  /* ---------- PRINCIPLES / FOOTER ---------- */
+  .cols2{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;align-items:start;}
+  .rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .rules li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 15px;}
+  .rules .rn{font-family:var(--font-mono);color:var(--accent);font-weight:700;
+    font-size:.85rem;flex:none;}
+  .rules b{color:var(--ink);}
+  .rules span{color:var(--ink-2);font-size:.88rem;}
+  .callout{background:var(--accent-soft);border:1px solid var(--line-2);
+    border-radius:var(--r);padding:18px;font-size:.86rem;color:var(--ink-2);}
+  .callout h3{font-family:var(--font-display);color:var(--ink);margin-bottom:8px;font-size:1.1rem;}
+  .callout a{font-family:var(--font-mono);font-size:.82rem;}
+
+  footer{padding:34px 0 60px;color:var(--muted);font-size:.8rem;}
+  footer .fnote{font-family:var(--font-mono);font-size:.72rem;line-height:1.7;}
+
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(3,1fr);}
+    .roadmap{grid-template-columns:repeat(2,1fr);}
+    .week{grid-template-columns:repeat(2,1fr);}
+    .cols2{grid-template-columns:1fr;}
+    .counters{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:560px){
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .roadmap{grid-template-columns:1fr;}
+    .sec-head .note{text-align:left;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .bar > i{transition:none;}
+  }
+</style>
+
+<div class="hero">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="brand">
+        <svg class="compass" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="1.4"/>
+          <circle cx="20" cy="20" r="1.8" fill="var(--accent)"/>
+          <path d="M20 5 L23 20 L20 35 L17 20 Z" fill="var(--accent)" opacity=".85"/>
+          <path d="M5 20 L20 17 L35 20 L20 23 Z" fill="var(--gold)" opacity=".7"/>
+        </svg>
+        <span>aritra&#8209;maxxing&nbsp;<b>· v1</b></span>
+      </div>
+      <div class="brand mono">JUNIOR&nbsp;YEAR&nbsp;OPERATING&nbsp;PLAN</div>
+    </div>
+
+    <p class="eyebrow">Terry College MIS &middot; Class of 2027</p>
+    <h1>Aritra <em>Maxxing.</em></h1>
+    <p class="lede">A layered game plan for <b>Aritra Bhattacharya</b> — rising junior in Management
+      Information Systems, minoring in mathematics &amp; astrophysics. One console for the two
+      mandatory rushes, the club portfolio, the recruiting pipeline, and the skills to compound
+      all summer. Navigate by the stars; execute by the sheet.</p>
+
+    <div class="chips">
+      <span class="chip accent">University of Georgia</span>
+      <span class="chip">Terry College of Business</span>
+      <span class="chip">Athens, GA</span>
+      <span class="chip">MIS &middot; Math &middot; Astrophysics</span>
+      <span class="chip">Target: Summer&nbsp;2027 internship</span>
+      <span class="chip"><a href="https://www.linkedin.com/in/aritrabhattacharya1/" target="_blank" rel="noopener">LinkedIn &#8599;</a></span>
+    </div>
+
+    <div class="counters">
+      <div class="counter"><div class="num mono" id="c-fall">—</div>
+        <div class="lbl">days to Fall '26 classes<br><span class="mono">Aug 13</span></div></div>
+      <div class="counter"><div class="num mono" id="c-rush">—</div>
+        <div class="lbl">days to fall rush window<br><span class="mono">~Aug 18</span></div></div>
+      <div class="counter"><div class="num mono" id="c-summer">—</div>
+        <div class="lbl">weeks of summer runway left</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KPI ROW ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="sec-num">00 / DASHBOARD</span>
+        <h2>The scoreboard</h2>
+      </div>
+      <p class="note">The whole plan in six numbers. If these move in the right direction, junior year is working.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k-num">2</div><div class="k-lbl">rushes — both mandatory<br>DSP + AK&Psi;</div></div>
+      <div class="kpi i"><div class="k-num">8</div><div class="k-lbl">orgs shortlisted to join or apply</div></div>
+      <div class="kpi g"><div class="k-num">40</div><div class="k-lbl">internship apps by Dec 15</div></div>
+      <div class="kpi w"><div class="k-num">6</div><div class="k-lbl">core skills in active build</div></div>
+      <div class="kpi gold"><div class="k-num">3.7</div><div class="k-lbl">GPA floor to protect</div></div>
+      <div class="kpi"><div class="k-num">3<span style="font-size:1rem">/wk</span></div><div class="k-lbl">coffee chats + follow-ups</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">01 / TRAJECTORY</span><h2>Four phases to a landed internship</h2></div>
+      <p class="note">Each phase has one objective and one success metric. Everything else is a means to it.</p>
+    </div>
+    <div class="roadmap">
+      <div class="phase now">
+        <span class="p-tag">Phase 1 · you are here</span>
+        <h3>Summer Sprint</h3>
+        <span class="when">Jul – Aug 2026</span>
+        <ul>
+          <li>Rebuild resume + LinkedIn to a recruiter standard</li>
+          <li>Ship SQL + Tableau to intermediate</li>
+          <li>Scout DSP &amp; AK&Psi; rush dates and every club Instagram</li>
+          <li>One portfolio project (dashboard or analysis)</li>
+        </ul>
+        <div class="win">Metric: <b>resume done · 20 warm connections</b></div>
+      </div>
+      <div class="phase">
+        <span class="p-tag">Phase 2</span>
+        <h3>Rush &amp; Recruit</h3>
+        <span class="when">Aug – Dec 2026</span>
+        <ul>
+          <li>Rush both fraternities → earn 1+ bid</li>
+          <li>Join 2 clubs, get on one committee</li>
+          <li>Work the Fall Career &amp; Internship Fair</li>
+          <li>Fire off internship apps every week</li>
+        </ul>
+        <div class="win">Metric: <b>bid + 40 apps + 3.7 GPA</b></div>
+      </div>
+      <div class="phase">
+        <span class="p-tag">Phase 3</span>
+        <h3>Convert</h3>
+        <span class="when">Jan – May 2027</span>
+        <ul>
+          <li>Pledge → active; take a real frat role</li>
+          <li>Run interview loops; nail case + behavioral</li>
+          <li>Committee → leadership in one club</li>
+          <li>Sign a Summer 2027 internship</li>
+        </ul>
+        <div class="win">Metric: <b>signed offer by Apr</b></div>
+      </div>
+      <div class="phase">
+        <span class="p-tag">Phase 4</span>
+        <h3>Compound</h3>
+        <span class="when">Summer 2027</span>
+        <ul>
+          <li>Over-deliver at the internship → return offer</li>
+          <li>Turn the work into a case study</li>
+          <li>Line up a senior-year leadership title</li>
+        </ul>
+        <div class="win">Metric: <b>return offer or referral</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RUSH TRACKER ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">02 / THE MANDATE</span><h2>Rush tracker — both, no excuses</h2></div>
+      <p class="note">Professional business fraternities run structured, multi-round rush in the first ~2 weeks each semester. Show at everything.</p>
+    </div>
+    <div class="rail">
+      <table>
+        <thead><tr>
+          <th>Organization</th><th>What it is</th><th>MIS angle</th><th>Rush window</th>
+          <th>The rounds</th><th>Bar to clear</th><th>Time cost</th><th>Priority</th>
+          <th>Status</th><th>Next action</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="primary">Delta Sigma Pi</span><span class="sub">ΔΣΠ · co-ed professional</span></td>
+            <td>National business fraternity — professional dev, alumni network, community.</td>
+            <td>Deep Terry alumni pipeline into consulting &amp; corporate; strong for a business major.</td>
+            <td class="num-cell">Fall: wk 1–2<br><span class="sub">~Aug 18–29</span></td>
+            <td>Info Night → Professional Night → Social → Interview → Bid</td>
+            <td>Open to business majors; attend required rounds; GPA ~2.5+ <span class="sub">[verify]</span></td>
+            <td>Pledge sem: <b>high</b></td>
+            <td><span class="pri p1">P1 · MUST</span></td>
+            <td><span class="pill warn">Researching</span></td>
+            <td>DM chapter IG for rush calendar</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Alpha Kappa Psi</span><span class="sub">AKΨ · co-ed professional</span></td>
+            <td>Oldest &amp; largest professional business fraternity — resume-grade brand.</td>
+            <td>National network + case/interview prep culture; pairs well with analyst tracks.</td>
+            <td class="num-cell">Fall: wk 1–2<br><span class="sub">~Aug 18–29</span></td>
+            <td>Meet the Brothers → Professional → Social → Interviews → Bid</td>
+            <td>Min GPA ~2.75, attend rush events, interview <span class="sub">[verify]</span></td>
+            <td>Pledge sem: <b>high</b></td>
+            <td><span class="pri p1">P1 · MUST</span></td>
+            <td><span class="pill warn">Researching</span></td>
+            <td>Find rush chair, add to calendar</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Beta Alpha Psi</span><span class="sub">BAΨ · honor org (bonus)</span></td>
+            <td>Honors org for accounting, finance &amp; <b>information systems</b> students.</td>
+            <td>MIS students qualify via the IS track — pure resume gold + firm access.</td>
+            <td class="num-cell">Fall intake<br><span class="sub">[verify]</span></td>
+            <td>Application + GPA + candidacy hours</td>
+            <td>Upper-level MIS coursework + ~3.0 GPA <span class="sub">[verify]</span></td>
+            <td>Med</td>
+            <td><span class="pri p2">P2 · reach</span></td>
+            <td><span class="pill neutral">Not started</span></td>
+            <td>Check IS-track eligibility</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="text-align:left;margin-top:12px;max-width:none;font-size:.8rem;">
+      <span class="mono" style="color:var(--warn)">⚑ [verify]</span> Exact dates, GPA minimums, and round names change year to year.
+      Confirm on each chapter's Instagram and the UGA Involvement Network before locking anything.
+    </p>
+  </div>
+</section>
+
+<!-- ============ CLUBS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">03 / PORTFOLIO</span><h2>Clubs &amp; orgs — build a spike, not a list</h2></div>
+      <p class="note">Join 2–3 with intent and get a role. Depth &gt; breadth. A committee seat beats five meetings attended.</p>
+    </div>
+    <div class="rail">
+      <table>
+        <thead><tr>
+          <th>Organization</th><th>Category</th><th>Why it matters for Aritra</th>
+          <th>Commitment</th><th>Recruits</th><th>Priority</th><th>First action</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="primary">MIS Student Association</span><span class="sub">Terry College</span></td>
+            <td><span class="pill accent">Major core</span></td>
+            <td>The home base for the major — company nights, mentors, the people you'll rush and recruit with.</td>
+            <td class="num-cell">Low–Med</td><td class="num-cell">Fall</td>
+            <td><span class="pri p1">P1</span></td><td>Attend first GBM, get on a committee</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Data Science / Analytics Club</span><span class="sub">"Data Dawgs" [verify name]</span></td>
+            <td><span class="pill info">Technical</span></td>
+            <td>Direct proof for analyst roles — projects, Kaggle-style comps, SQL/Python in public.</td>
+            <td class="num-cell">Med</td><td class="num-cell">Fall</td>
+            <td><span class="pri p1">P1</span></td><td>Join a project team this fall</td>
+          </tr>
+          <tr>
+            <td><span class="primary">UGA Consulting Group</span><span class="sub">student consulting [verify]</span></td>
+            <td><span class="pill info">Case reps</span></td>
+            <td>Real client work = the story that wins consulting &amp; strategy interviews.</td>
+            <td class="num-cell">High</td><td class="num-cell">Fall app</td>
+            <td><span class="pri p2">P2</span></td><td>Watch app deadline, prep a case</td>
+          </tr>
+          <tr>
+            <td><span class="primary">UGAHacks / CodeDawgs</span><span class="sub">hackathon &amp; dev</span></td>
+            <td><span class="pill info">Technical</span></td>
+            <td>Ship something in a weekend — instant portfolio + technical credibility for MIS.</td>
+            <td class="num-cell">Burst</td><td class="num-cell">Year-round</td>
+            <td><span class="pri p2">P2</span></td><td>Register for next hackathon</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Terry Technology / Product club</span><span class="sub">[verify exact org]</span></td>
+            <td><span class="pill accent">Major-adjacent</span></td>
+            <td>Product &amp; IT track exposure; recruiter access for tech-in-business roles.</td>
+            <td class="num-cell">Low–Med</td><td class="num-cell">Fall</td>
+            <td><span class="pri p3">P3</span></td><td>Scout at org fair</td>
+          </tr>
+          <tr>
+            <td><span class="primary">UGA Astronomical Society</span><span class="sub">Physics &amp; Astronomy</span></td>
+            <td><span class="pill" style="color:var(--gold);background:var(--warn-bg)">Signature</span></td>
+            <td>The minor made real — a genuine differentiator &amp; talking point no other MIS applicant has.</td>
+            <td class="num-cell">Low</td><td class="num-cell">Fall</td>
+            <td><span class="pri p3">P3</span></td><td>Go to an observing night</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Undergraduate Math Club</span><span class="sub">Dept. of Mathematics</span></td>
+            <td><span class="pill neutral">Minor</span></td>
+            <td>Backs the quant story; useful for data/quant-leaning roles &amp; grad options.</td>
+            <td class="num-cell">Low</td><td class="num-cell">Fall</td>
+            <td><span class="pri p3">P3</span></td><td>Add to semester schedule</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Case competitions</span><span class="sub">Terry-hosted / national</span></td>
+            <td><span class="pill good">High-leverage</span></td>
+            <td>A placed case comp is worth ten club memberships on a resume — do at least one.</td>
+            <td class="num-cell">Burst</td><td class="num-cell">Fall/Spring</td>
+            <td><span class="pri p2">P2</span></td><td>Find a Fall comp + form a team</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECRUITING PIPELINE ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">04 / PIPELINE</span><h2>Recruiting board — Summer 2027</h2></div>
+      <p class="note">Starter tracker of role tracks &amp; employers that hit UGA Terry. Duplicate a row per real application and move the status pill.</p>
+    </div>
+    <div class="rail">
+      <table>
+        <thead><tr>
+          <th>Role track</th><th>Fit for MIS</th><th>Where it lives</th>
+          <th>Employers that recruit Terry</th><th>Cycle opens</th><th>Priority</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="primary">Technology / IT Consulting</span></td>
+            <td><span class="stars-rate">★★★★★</span></td>
+            <td>Consulting firms</td>
+            <td>Deloitte, Accenture, EY, PwC, KPMG</td>
+            <td class="num-cell">Aug–Oct '26</td>
+            <td><span class="pri p1">P1</span></td><td><span class="pill neutral">Not started</span></td>
+          </tr>
+          <tr>
+            <td><span class="primary">Business / Data Analyst</span></td>
+            <td><span class="stars-rate">★★★★★</span></td>
+            <td>Corp analytics teams</td>
+            <td>Home Depot, Cox, Delta, Southern Co, Aflac</td>
+            <td class="num-cell">Sep–Nov '26</td>
+            <td><span class="pri p1">P1</span></td><td><span class="pill neutral">Not started</span></td>
+          </tr>
+          <tr>
+            <td><span class="primary">Business Systems Analyst</span></td>
+            <td><span class="stars-rate">★★★★☆</span></td>
+            <td>Product/IT orgs</td>
+            <td>NCR, Global Payments, Elavon, Truist</td>
+            <td class="num-cell">Sep–Nov '26</td>
+            <td><span class="pri p2">P2</span></td><td><span class="pill neutral">Not started</span></td>
+          </tr>
+          <tr>
+            <td><span class="primary">Product / Project Mgmt</span></td>
+            <td><span class="stars-rate">★★★★☆</span></td>
+            <td>Tech &amp; fintech</td>
+            <td>Microsoft, MailChimp/Intuit, Salesforce</td>
+            <td class="num-cell">Aug–Oct '26</td>
+            <td><span class="pri p2">P2</span></td><td><span class="pill neutral">Not started</span></td>
+          </tr>
+          <tr>
+            <td><span class="primary">Sales / Solutions Engineering</span></td>
+            <td><span class="stars-rate">★★★☆☆</span></td>
+            <td>Enterprise SaaS</td>
+            <td>Salesforce, Oracle, SAP, ServiceNow</td>
+            <td class="num-cell">Rolling</td>
+            <td><span class="pri p3">P3</span></td><td><span class="pill neutral">Not started</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="text-align:left;margin-top:12px;max-width:none;font-size:.8rem;">
+      <span class="mono" style="color:var(--info)">↳ workflow</span>
+      Handshake + company sites weekly · apply within 48h of a posting · one referral beats fifty cold apps —
+      mine LinkedIn for Terry alumni before every application.
+    </p>
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">05 / LOADOUT</span><h2>Skills matrix — proof over claims</h2></div>
+      <p class="note">Every skill ends in a deliverable you can show. "Learned SQL" is worthless; a published dashboard is not.</p>
+    </div>
+    <div class="rail">
+      <table>
+        <thead><tr>
+          <th>Skill</th><th>Why (MIS relevance)</th><th>Now → Target</th><th style="width:150px">Progress</th>
+          <th>Go-to resource</th><th>Proof to ship</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="primary">SQL</span></td>
+            <td>The universal analyst language — every BA/DA role tests it.</td>
+            <td class="lvl">Beginner → Advanced</td>
+            <td><div class="bar"><i data-w="55%"></i></div></td>
+            <td>Mode / DataLemur / LeetCode SQL</td>
+            <td>50-query notebook on a real dataset</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Tableau / Power BI</span></td>
+            <td>Turns data into the decisions managers actually pay for.</td>
+            <td class="lvl">Novice → Advanced</td>
+            <td><div class="bar"><i data-w="40%"></i></div></td>
+            <td>Tableau Public + guided projects</td>
+            <td>Published interactive dashboard</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Excel modeling</span></td>
+            <td>Still the operating system of business — pivots, lookups, models.</td>
+            <td class="lvl">Intermediate → Advanced</td>
+            <td><div class="bar"><i data-w="70%"></i></div></td>
+            <td>Wall Street Prep / Corporate Finance Inst.</td>
+            <td>A working budget/forecast model</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Python (pandas)</span></td>
+            <td>Automates the analysis SQL + Excel can't reach.</td>
+            <td class="lvl">Beginner → Intermediate</td>
+            <td><div class="bar"><i data-w="35%"></i></div></td>
+            <td>Kaggle Learn + one dataset you like</td>
+            <td>Notebook: astro or sports data analysis</td>
+          </tr>
+          <tr>
+            <td><span class="primary">Case / behavioral interviewing</span></td>
+            <td>The skill that converts every other skill into an offer.</td>
+            <td class="lvl">Untested → Sharp</td>
+            <td><div class="bar"><i data-w="25%"></i></div></td>
+            <td>Case in Point + AK&Psi;/DSP mock loops</td>
+            <td>10 recorded mocks; STAR story bank</td>
+          </tr>
+          <tr>
+            <td><span class="primary">ERP / systems literacy</span></td>
+            <td>Core MIS turf — the "IS" that employers hire the major for.</td>
+            <td class="lvl">Coursework → Applied</td>
+            <td><div class="bar"><i data-w="45%"></i></div></td>
+            <td>Terry MIS courses + SAP/Salesforce Trailhead</td>
+            <td>Salesforce/Trailhead certificate</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WEEKLY CADENCE ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">06 / CADENCE</span><h2>The weekly operating rhythm</h2></div>
+      <p class="note">Themed days beat a to-do list. Same blocks every week until they're automatic. Adjust once classes set the timetable.</p>
+    </div>
+    <div class="week">
+      <div class="day"><div class="dname">Mon</div><div class="theme">Applications</div>
+        <ul><li>Handshake sweep</li><li>2–3 tailored apps</li><li>Log to pipeline</li></ul></div>
+      <div class="day"><div class="dname">Tue</div><div class="theme">Skill: SQL</div>
+        <ul><li>90 min queries</li><li>DataLemur set</li><li>Push to notebook</li></ul></div>
+      <div class="day"><div class="dname">Wed</div><div class="theme">Network</div>
+        <ul><li>3 coffee-chat DMs</li><li>Follow up on last week</li><li>LinkedIn post/comment</li></ul></div>
+      <div class="day"><div class="dname">Thu</div><div class="theme">Orgs &amp; rush</div>
+        <ul><li>Club / frat events</li><li>Committee work</li><li>Show your face</li></ul></div>
+      <div class="day"><div class="dname">Fri</div><div class="theme">Build</div>
+        <ul><li>Portfolio project</li><li>Tableau / Python</li><li>Ship something small</li></ul></div>
+      <div class="day rest"><div class="dname">Sat</div><div class="theme">Flex / recover</div>
+        <ul><li>Case comp or event</li><li>Catch up on class</li><li>Actually rest</li></ul></div>
+      <div class="day rest"><div class="dname">Sun</div><div class="theme">Weekly review</div>
+        <ul><li>Update this sheet</li><li>Plan the week</li><li>GPA check-in</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRINCIPLES ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="sec-num">07 / DOCTRINE</span><h2>Rules of the grind</h2></div>
+    </div>
+    <div class="cols2">
+      <ul class="rules">
+        <li><span class="rn">01</span><div><b>GPA is the floor, not the goal.</b> <span>3.7+ keeps every door open. It is the cheapest edge you have — protect it first.</span></div></li>
+        <li><span class="rn">02</span><div><b>Follow up within 24 hours.</b> <span>Met someone, did an interview, got advice? Thank-you note the same day. This alone beats most peers.</span></div></li>
+        <li><span class="rn">03</span><div><b>Depth beats a long list.</b> <span>One leadership role and one placed case comp outweigh eight clubs you merely attended.</span></div></li>
+        <li><span class="rn">04</span><div><b>Ship proof, not plans.</b> <span>A public dashboard, a repo, a placed comp. Recruiters trust artifacts, not adjectives.</span></div></li>
+        <li><span class="rn">05</span><div><b>Referrals &gt; cold apps.</b> <span>Find a Terry alum before you hit submit. One warm intro is worth fifty portals.</span></div></li>
+        <li><span class="rn">06</span><div><b>Rush both. Fully.</b> <span>You only get bids from rooms you show up to. Non-negotiable for the first two weeks.</span></div></li>
+      </ul>
+      <div class="callout">
+        <h3>Before you lock dates</h3>
+        <p>Org names, rush windows, and GPA cutoffs shift each year and this console seeds best-effort placeholders marked <span class="mono" style="color:var(--warn)">[verify]</span>. Ground-truth every one:</p>
+        <p style="margin-top:12px;line-height:2;">
+          <a href="https://dawgs.uga.edu/" target="_blank" rel="noopener">UGA Involvement Network &#8599;</a><br>
+          <a href="https://www.terry.uga.edu/" target="_blank" rel="noopener">Terry College of Business &#8599;</a><br>
+          <a href="https://career.uga.edu/" target="_blank" rel="noopener">UGA Career Center · Handshake &#8599;</a><br>
+          <span class="mono" style="color:var(--muted)">+ each chapter's Instagram for live rush calendars</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="fnote">
+      aritra-maxxing · v1 &nbsp;—&nbsp; built as a living planning console; edit the tables as reality lands.<br>
+      Placeholders marked [verify] are starting points, not gospel. Confirm dates before committing.<br>
+      For Aritra Bhattacharya · UGA Terry MIS '27 · <a href="https://www.linkedin.com/in/aritrabhattacharya1/" target="_blank" rel="noopener">linkedin.com/in/aritrabhattacharya1</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    // ---- Countdowns ----
+    var now = new Date();
+    function days(to){ return Math.max(0, Math.ceil((to - now)/86400000)); }
+    var fall = new Date(2026,7,13);   // Aug 13 2026
+    var rush = new Date(2026,7,18);   // ~Aug 18 2026
+    var set = function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+    set('c-fall', days(fall));
+    set('c-rush', days(rush));
+    set('c-summer', Math.max(0, Math.ceil(days(fall)/7)) );
+
+    // ---- Skill bars fill on view ----
+    var bars = document.querySelectorAll('.bar > i');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function fill(){ bars.forEach(function(b){ b.style.width = b.getAttribute('data-w'); }); }
+    if(reduce){ fill(); }
+    else if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.style.width = e.target.getAttribute('data-w'); io.unobserve(e.target); } });
+      }, {threshold:.4});
+      bars.forEach(function(b){ io.observe(b); });
+    } else { fill(); }
+
+    // ---- Hero starfield ----
+    var cv = document.getElementById('stars');
+    if(cv){
+      var ctx = cv.getContext('2d'), stars=[], raf, W, H, dpr=Math.min(window.devicePixelRatio||1,2);
+      function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+      function resize(){
+        var r = cv.parentElement.getBoundingClientRect();
+        W=r.width; H=r.height; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+        var n = Math.round(W*H/9000);
+        stars = [];
+        for(var i=0;i<n;i++){ stars.push({x:Math.random()*W,y:Math.random()*H,
+          r:Math.random()*1.3+.2, a:Math.random(), s:Math.random()*.02+.004,
+          gold:Math.random()<.14}); }
+      }
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        var acc = css('--accent'), gold = css('--gold');
+        for(var i=0;i<stars.length;i++){ var st=stars[i];
+          st.a += st.s; var tw = .35 + Math.abs(Math.sin(st.a))*.55;
+          ctx.globalAlpha = tw*.5;
+          ctx.fillStyle = st.gold ? gold : acc;
+          ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.283); ctx.fill();
+        }
+        ctx.globalAlpha=1;
+        raf = requestAnimationFrame(draw);
+      }
+      resize(); window.addEventListener('resize', resize);
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ draw(); cancelAnimationFrame(raf); draw(); }
+      else { draw(); }
+    }
+  })();
+</script>
+</body>
+</html>
