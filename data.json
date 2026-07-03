@@ -1,0 +1,453 @@
+{
+  "meta": {
+    "owner": "Aritra Bhattacharya",
+    "role": "UGA Terry MIS · Class of 2027",
+    "xp": 0,
+    "level": 1,
+    "streak": 0,
+    "lastActive": null,
+    "updatedAt": 1783120855578,
+    "activity": []
+  },
+  "phases": [
+    {
+      "id": "p1",
+      "tag": "Phase 1 · now",
+      "title": "Summer Sprint",
+      "when": "Jul – Aug 2026",
+      "metric": "resume done · 20 warm connections",
+      "tasks": [
+        {
+          "id": "t1",
+          "text": "Rebuild resume to recruiter standard",
+          "done": false
+        },
+        {
+          "id": "t2",
+          "text": "Overhaul LinkedIn (headline, banner, projects)",
+          "done": false
+        },
+        {
+          "id": "t3",
+          "text": "SQL → intermediate (DataLemur)",
+          "done": false
+        },
+        {
+          "id": "t4",
+          "text": "Scout DSP & AKΨ rush dates + club IGs",
+          "done": false
+        },
+        {
+          "id": "t5",
+          "text": "Ship one portfolio project",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tag": "Phase 2",
+      "title": "Rush & Recruit",
+      "when": "Aug – Dec 2026",
+      "metric": "bid + 40 apps + 3.7 GPA",
+      "tasks": [
+        {
+          "id": "t6",
+          "text": "Rush both fraternities → earn a bid",
+          "done": false
+        },
+        {
+          "id": "t7",
+          "text": "Join 2 clubs, get on a committee",
+          "done": false
+        },
+        {
+          "id": "t8",
+          "text": "Work the Fall Career & Internship Fair",
+          "done": false
+        },
+        {
+          "id": "t9",
+          "text": "Apply to internships every single week",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tag": "Phase 3",
+      "title": "Convert",
+      "when": "Jan – May 2027",
+      "metric": "signed offer by April",
+      "tasks": [
+        {
+          "id": "t10",
+          "text": "Pledge → active; take a real frat role",
+          "done": false
+        },
+        {
+          "id": "t11",
+          "text": "Run interview loops (case + behavioral)",
+          "done": false
+        },
+        {
+          "id": "t12",
+          "text": "Step into leadership in one club",
+          "done": false
+        },
+        {
+          "id": "t13",
+          "text": "Sign a Summer 2027 internship",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tag": "Phase 4",
+      "title": "Compound",
+      "when": "Summer 2027",
+      "metric": "return offer or referral",
+      "tasks": [
+        {
+          "id": "t14",
+          "text": "Over-deliver at the internship",
+          "done": false
+        },
+        {
+          "id": "t15",
+          "text": "Turn the work into a case study",
+          "done": false
+        },
+        {
+          "id": "t16",
+          "text": "Line up senior-year leadership title",
+          "done": false
+        }
+      ]
+    }
+  ],
+  "rush": [
+    {
+      "id": "r1",
+      "org": "Delta Sigma Pi",
+      "type": "ΔΣΠ · co-ed professional",
+      "angle": "Deep Terry alumni pipeline into consulting & corporate.",
+      "window": "Fall wk 1–2 (~Aug 18–29) [verify]",
+      "rounds": "Info Night → Professional → Social → Interview → Bid",
+      "bar": "Business major; attend rounds; GPA ~2.5+ [verify]",
+      "cost": "High (pledge sem)",
+      "priority": "P1",
+      "status": "Researching",
+      "next": "DM chapter IG for rush calendar"
+    },
+    {
+      "id": "r2",
+      "org": "Alpha Kappa Psi",
+      "type": "AKΨ · co-ed professional",
+      "angle": "National network + case/interview prep culture.",
+      "window": "Fall wk 1–2 (~Aug 18–29) [verify]",
+      "rounds": "Meet the Brothers → Professional → Social → Interviews → Bid",
+      "bar": "GPA ~2.75; attend events; interview [verify]",
+      "cost": "High (pledge sem)",
+      "priority": "P1",
+      "status": "Researching",
+      "next": "Find rush chair, add dates to calendar"
+    },
+    {
+      "id": "r3",
+      "org": "Beta Alpha Psi",
+      "type": "BAΨ · honor org (bonus)",
+      "angle": "MIS qualifies via the Information Systems track — resume gold.",
+      "window": "Fall intake [verify]",
+      "rounds": "Application + GPA + candidacy hours",
+      "bar": "Upper-level MIS coursework + ~3.0 GPA [verify]",
+      "cost": "Medium",
+      "priority": "P2",
+      "status": "Not started",
+      "next": "Check IS-track eligibility"
+    }
+  ],
+  "clubs": [
+    {
+      "id": "c1",
+      "org": "MIS Student Association",
+      "meta": "Terry College",
+      "cat": "Major core",
+      "why": "Home base for the major — company nights, mentors, the people you rush with.",
+      "commit": "Low–Med",
+      "recruits": "Fall",
+      "priority": "P1",
+      "action": "Attend first GBM, join a committee",
+      "done": false
+    },
+    {
+      "id": "c2",
+      "org": "Data Science / Analytics Club",
+      "meta": "\"Data Dawgs\" [verify]",
+      "cat": "Technical",
+      "why": "Direct proof for analyst roles — projects, comps, SQL/Python in public.",
+      "commit": "Med",
+      "recruits": "Fall",
+      "priority": "P1",
+      "action": "Join a project team",
+      "done": false
+    },
+    {
+      "id": "c3",
+      "org": "UGA Consulting Group",
+      "meta": "student consulting [verify]",
+      "cat": "Case reps",
+      "why": "Real client work = the story that wins strategy interviews.",
+      "commit": "High",
+      "recruits": "Fall app",
+      "priority": "P2",
+      "action": "Watch app deadline, prep a case",
+      "done": false
+    },
+    {
+      "id": "c4",
+      "org": "UGAHacks / CodeDawgs",
+      "meta": "hackathon & dev",
+      "cat": "Technical",
+      "why": "Ship in a weekend — instant portfolio + technical credibility.",
+      "commit": "Burst",
+      "recruits": "Year-round",
+      "priority": "P2",
+      "action": "Register for next hackathon",
+      "done": false
+    },
+    {
+      "id": "c5",
+      "org": "UGA Astronomical Society",
+      "meta": "Physics & Astronomy",
+      "cat": "Signature",
+      "why": "The minor made real — a differentiator no other MIS applicant has.",
+      "commit": "Low",
+      "recruits": "Fall",
+      "priority": "P3",
+      "action": "Go to an observing night",
+      "done": false
+    },
+    {
+      "id": "c6",
+      "org": "Case competitions",
+      "meta": "Terry / national",
+      "cat": "High-leverage",
+      "why": "A placed case comp outweighs ten memberships. Do at least one.",
+      "commit": "Burst",
+      "recruits": "Fall/Spring",
+      "priority": "P2",
+      "action": "Find a Fall comp + form a team",
+      "done": false
+    }
+  ],
+  "pipeline": [
+    {
+      "id": "j1",
+      "role": "Technology / IT Consulting",
+      "track": "★★★★★",
+      "employers": "Deloitte, Accenture, EY, PwC, KPMG",
+      "cycle": "Aug–Oct 26",
+      "priority": "P1",
+      "stage": "Target"
+    },
+    {
+      "id": "j2",
+      "role": "Business / Data Analyst",
+      "track": "★★★★★",
+      "employers": "Home Depot, Cox, Delta, Southern Co, Aflac",
+      "cycle": "Sep–Nov 26",
+      "priority": "P1",
+      "stage": "Target"
+    },
+    {
+      "id": "j3",
+      "role": "Business Systems Analyst",
+      "track": "★★★★☆",
+      "employers": "NCR, Global Payments, Elavon, Truist",
+      "cycle": "Sep–Nov 26",
+      "priority": "P2",
+      "stage": "Target"
+    },
+    {
+      "id": "j4",
+      "role": "Product / Project Mgmt",
+      "track": "★★★★☆",
+      "employers": "Microsoft, Intuit, Salesforce",
+      "cycle": "Aug–Oct 26",
+      "priority": "P2",
+      "stage": "Target"
+    },
+    {
+      "id": "j5",
+      "role": "Sales / Solutions Eng.",
+      "track": "★★★☆☆",
+      "employers": "Salesforce, Oracle, SAP, ServiceNow",
+      "cycle": "Rolling",
+      "priority": "P3",
+      "stage": "Target"
+    }
+  ],
+  "skills": [
+    {
+      "id": "k1",
+      "name": "SQL",
+      "why": "Universal analyst language — every BA/DA role tests it.",
+      "now": "Beginner",
+      "target": "Advanced",
+      "pct": 35,
+      "resource": "Mode · DataLemur · LeetCode",
+      "proof": "50-query notebook on a real dataset"
+    },
+    {
+      "id": "k2",
+      "name": "Tableau / Power BI",
+      "why": "Turns data into decisions managers pay for.",
+      "now": "Novice",
+      "target": "Advanced",
+      "pct": 20,
+      "resource": "Tableau Public",
+      "proof": "Published interactive dashboard"
+    },
+    {
+      "id": "k3",
+      "name": "Excel modeling",
+      "why": "Still the OS of business — pivots, lookups, models.",
+      "now": "Intermediate",
+      "target": "Advanced",
+      "pct": 55,
+      "resource": "Wall Street Prep · CFI",
+      "proof": "Working budget/forecast model"
+    },
+    {
+      "id": "k4",
+      "name": "Python (pandas)",
+      "why": "Automates what SQL + Excel can't reach.",
+      "now": "Beginner",
+      "target": "Intermediate",
+      "pct": 25,
+      "resource": "Kaggle Learn",
+      "proof": "Astro or sports data notebook"
+    },
+    {
+      "id": "k5",
+      "name": "Case / behavioral interviews",
+      "why": "Converts every other skill into an offer.",
+      "now": "Untested",
+      "target": "Sharp",
+      "pct": 10,
+      "resource": "Case in Point + mocks",
+      "proof": "10 recorded mocks + STAR bank"
+    },
+    {
+      "id": "k6",
+      "name": "ERP / systems literacy",
+      "why": "Core MIS turf — the \"IS\" employers hire for.",
+      "now": "Coursework",
+      "target": "Applied",
+      "pct": 30,
+      "resource": "Salesforce Trailhead · SAP",
+      "proof": "Salesforce certificate"
+    }
+  ],
+  "cadence": [
+    {
+      "day": "Mon",
+      "theme": "Applications",
+      "rest": false,
+      "items": [
+        "Handshake sweep",
+        "2–3 tailored apps",
+        "Log to pipeline"
+      ]
+    },
+    {
+      "day": "Tue",
+      "theme": "Skill · SQL",
+      "rest": false,
+      "items": [
+        "90 min queries",
+        "DataLemur set",
+        "Push to notebook"
+      ]
+    },
+    {
+      "day": "Wed",
+      "theme": "Network",
+      "rest": false,
+      "items": [
+        "3 coffee-chat DMs",
+        "Follow up last week",
+        "LinkedIn post/comment"
+      ]
+    },
+    {
+      "day": "Thu",
+      "theme": "Orgs & rush",
+      "rest": false,
+      "items": [
+        "Club / frat events",
+        "Committee work",
+        "Show your face"
+      ]
+    },
+    {
+      "day": "Fri",
+      "theme": "Build",
+      "rest": false,
+      "items": [
+        "Portfolio project",
+        "Tableau / Python",
+        "Ship something small"
+      ]
+    },
+    {
+      "day": "Sat",
+      "theme": "Flex / recover",
+      "rest": true,
+      "items": [
+        "Case comp or event",
+        "Catch up on class",
+        "Actually rest"
+      ]
+    },
+    {
+      "day": "Sun",
+      "theme": "Weekly review",
+      "rest": true,
+      "items": [
+        "Update this workspace",
+        "Plan the week",
+        "GPA check-in"
+      ]
+    }
+  ],
+  "doctrine": [
+    {
+      "b": "GPA is the floor, not the goal.",
+      "s": "3.7+ keeps every door open. Cheapest edge you have — protect it first."
+    },
+    {
+      "b": "Follow up within 24 hours.",
+      "s": "Thank-you note the same day you meet, interview, or get advice. This alone beats most peers."
+    },
+    {
+      "b": "Depth beats a long list.",
+      "s": "One leadership role + one placed case comp outweigh eight clubs you merely attended."
+    },
+    {
+      "b": "Ship proof, not plans.",
+      "s": "A public dashboard, a repo, a placed comp. Recruiters trust artifacts, not adjectives."
+    },
+    {
+      "b": "Referrals > cold apps.",
+      "s": "Find a Terry alum before you hit submit. One warm intro beats fifty portals."
+    },
+    {
+      "b": "Rush both. Fully.",
+      "s": "You only get bids from rooms you show up to. Non-negotiable for the first two weeks."
+    }
+  ],
+  "notes": {}
+}
