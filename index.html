@@ -1032,6 +1032,19 @@ async function handleSession(session){
   if(!role){ await sb.auth.signOut(); $('#loginErr').textContent='This email is not on the workspace allowlist.'; return; }
   startApp(role, email);
 }
+function showAuthLinkError(){
+  const params = new URLSearchParams(location.hash.replace(/^#/,'') || location.search);
+  const code = params.get('error_code') || params.get('error');
+  const desc = params.get('error_description');
+  if(!code && !desc) return false;
+  const err=$('#loginErr');
+  const msg = (desc || code || '').replace(/\+/g,' ');
+  err.textContent = code==='otp_expired'
+    ? 'That email link is expired or was already used. Send a fresh link from this page, then open the newest email only.'
+    : msg || 'Auth link failed. Send a fresh login link from this page.';
+  history.replaceState(null,'',location.pathname);
+  return true;
+}
 $('#loginForm').addEventListener('submit',async e=>{
   e.preventDefault(); const err=$('#loginErr'); err.textContent='Signing in…';
   const email=$('#u').value.trim(), password=$('#p').value;
@@ -1085,10 +1098,11 @@ async function startApp(role,email){
 
 /* boot — resume an existing Supabase session if one is stored */
 (async function(){
+  const hadAuthError = showAuthLinkError();
   try{ const { data } = await sb.auth.getSession();
     if(data.session && roleFor(data.session.user.email)) return handleSession(data.session);
   }catch(e){ console.warn(e); }
-  $('#u').focus();
+  if(!hadAuthError) $('#u').focus();
 })();
 </script>
 </body>

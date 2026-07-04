@@ -20,12 +20,14 @@ Accounts are managed by Supabase Auth (hashed server-side); the repo never store
 
 Full step-by-step is in **[`supabase/SETUP.md`](supabase/SETUP.md)**. The short version — your project's URL + anon key are already wired into `index.html`; you only need to:
 
-1. **Set Aritra's email** in two spots (your admin email `pratyushch9@gmail.com` is already filled):
-   - [`supabase/schema.sql`](supabase/schema.sql) → replace `aritra@example.com` (3 RLS spots).
-   - `index.html` → the `CONFIG` block → `editorEmail`.
+1. **Optionally set Aritra's email** in `index.html` → the `CONFIG` block → `editorEmail`.
+   Your admin email `pratyushch9@gmail.com` is already filled, and the schema no longer requires Aritra's email.
 2. **Run the schema:** Supabase dashboard → **SQL Editor** → paste [`supabase/schema.sql`](supabase/schema.sql) → **Run**.
 3. **Create the two users:** dashboard → **Authentication → Users → Add user**, with **"Auto Confirm User"** checked — once for Aritra, once for you.
-4. Open the live login link. Aritra edits; your Oversight screen updates live.
+4. **Fix Auth redirects:** Supabase dashboard → **Authentication → URL Configuration**:
+   - Site URL: `https://cprat189.github.io/aritra-maxxing/`
+   - Redirect URLs: add `https://cprat189.github.io/aritra-maxxing/`
+5. Open the live login link. Aritra edits; your Oversight screen updates live.
 
 ```text
 https://cprat189.github.io/aritra-maxxing/

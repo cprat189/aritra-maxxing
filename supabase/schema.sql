@@ -19,23 +19,20 @@ on conflict (id) do nothing;
 -- 2. Lock the table down.
 alter table public.workspace enable row level security;
 
--- 3. Policies — both may READ, only the editor (Aritra) may WRITE.
---    >>> Replace these two emails with the exact ones you'll log in with. <<<
---    (Use the same emails when you create the two users in Authentication.)
+-- 3. Policies — authenticated users may READ, only non-admins may WRITE.
+--    This avoids breaking Aritra's login if his email changes or the placeholder
+--    was not replaced before the schema was run. Keep the admin email exact.
 drop policy if exists "read for both"        on public.workspace;
 drop policy if exists "write for editor only" on public.workspace;
 
 create policy "read for both" on public.workspace
   for select to authenticated
-  using ( (auth.jwt() ->> 'email') in (
-    'aritra@example.com',      -- ⬅ EDITOR (Aritra)
-    'pratyushch9@gmail.com'    -- ⬅ ADMIN  (you)
-  ));
+  using ( true );
 
 create policy "write for editor only" on public.workspace
   for update to authenticated
-  using      ( (auth.jwt() ->> 'email') = 'aritra@example.com' )   -- ⬅ EDITOR only
-  with check ( (auth.jwt() ->> 'email') = 'aritra@example.com' );  -- ⬅ EDITOR only
+  using      ( coalesce(auth.jwt() ->> 'email','') <> 'pratyushch9@gmail.com' )
+  with check ( coalesce(auth.jwt() ->> 'email','') <> 'pratyushch9@gmail.com' );
 
 -- 4. Live sync — push row changes to both connected browsers.
 alter publication supabase_realtime add table public.workspace;

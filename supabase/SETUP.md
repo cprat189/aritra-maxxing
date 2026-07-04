@@ -14,6 +14,14 @@ Dashboard → **Authentication** → **Users** → **Add user** → *Create new 
 
 > "Auto Confirm" matters — without it, login is blocked pending email verification.
 
+## 2.5. Fix Auth URL redirects
+Dashboard → **Authentication** → **URL Configuration**:
+
+- **Site URL:** `https://cprat189.github.io/aritra-maxxing/`
+- **Redirect URLs:** add `https://cprat189.github.io/aritra-maxxing/`
+
+If this is still set to `http://localhost:3000`, email login links will open a dead localhost page before the app can load.
+
 If users already exist but login says the account is not confirmed, open each user in **Authentication → Users** and confirm the email, or run the PowerShell finisher from the repo root with your Supabase `service_role` key:
 
 ```powershell
@@ -26,10 +34,10 @@ If users already exist but login says the account is not confirmed, open each us
 
 ## 3. Run the schema
 Dashboard → **SQL Editor** → **New query** → paste all of [`schema.sql`](./schema.sql).
-**Before running**, replace `aritra@example.com` (3 spots, marked ⬅) with Aritra's real email. Your admin email (`pratyushch9@gmail.com`) is already filled in. Then **Run**.
+Your admin email (`pratyushch9@gmail.com`) is already filled in. Then **Run**.
 
 ## 4. Set Aritra's email in the app
-Open [`../index.html`](../index.html), find the `CONFIG` block near the top of the `<script>`, and set `editorEmail` to the same email you used above. (URL, anon key, and `adminEmail` are already wired.)
+Open [`../index.html`](../index.html), find the `CONFIG` block near the top of the `<script>`, and optionally set `editorEmail` to Aritra's real email. If left blank, any non-admin authenticated user is treated as the editor in the UI; database RLS still blocks the admin from writing.
 
 ## Done
 Open `index.html` and log in with the account you created in step 2. The app already talks to Supabase Auth, reads/writes the shared `workspace` row, and subscribes to realtime — Aritra edits, your Oversight screen updates live. No `service_role` key is ever used; the public `anon` key + RLS is what protects the data.
