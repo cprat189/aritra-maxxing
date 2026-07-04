@@ -18,17 +18,16 @@ Two accounts only — the app rejects any other email. Passwords are managed by 
 
 ## Setup (one time)
 
-Everything lives in your Supabase project (URL + anon key are already wired into `index.html`).
+Full step-by-step is in **[`supabase/SETUP.md`](supabase/SETUP.md)**. The short version — your project's URL + anon key are already wired into `index.html`; you only need to:
 
-1. **Pick the two emails** you'll each log in with. Put them in **two** places:
-   - `supabase-setup.sql` → replace `aritra@example.com` in the three RLS policies.
-   - `index.html` → the `CONFIG` block near the top of the `<script>`: set `editorEmail` (Aritra) and `adminEmail` (you).
-2. **Run the schema:** Supabase dashboard → **SQL Editor** → paste all of `supabase-setup.sql` → **Run**. This creates the `workspace` table, the RLS policies, and turns on realtime.
-3. **Turn off email confirmation** (so signup is instant): dashboard → **Authentication → Providers → Email** → disable *"Confirm email"* → save.
-4. **Create the two accounts:** open the app, type each email + a password, and click **"First time? Create account"** — once for Aritra, once for you.
-5. Done. Aritra edits; your screen updates live.
+1. **Set Aritra's email** in two spots (your admin email `pratyushch9@gmail.com` is already filled):
+   - [`supabase/schema.sql`](supabase/schema.sql) → replace `aritra@example.com` (3 RLS spots).
+   - `index.html` → the `CONFIG` block → `editorEmail`.
+2. **Run the schema:** Supabase dashboard → **SQL Editor** → paste [`supabase/schema.sql`](supabase/schema.sql) → **Run**.
+3. **Create the two users:** dashboard → **Authentication → Users → Add user**, with **"Auto Confirm User"** checked — once for Aritra, once for you.
+4. Open `index.html` and log in. Aritra edits; your Oversight screen updates live.
 
-> The committed `data.json` is only a first-run seed. Once the cloud row exists, it's the source of truth. **Export snapshot** still works as a manual backup.
+> The committed `data.json` is only a first-run seed. Once the cloud row has data, it's the source of truth. **Export snapshot** still works as a manual backup.
 
 ## What's inside
 

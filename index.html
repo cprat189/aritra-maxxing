@@ -375,9 +375,9 @@
 const CONFIG = {
   url:  'https://fjjhrpyszzjbdeoahvqv.supabase.co',
   anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamhycHlzenpqYmRlb2FodnF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTEyNTEsImV4cCI6MjA5ODY4NzI1MX0.yNJONh2npE5RW55AKmhIQ7PstyBWmQPWz4t5X5TO7cE',
-  // >>> the two emails you sign up with. Must match supabase-setup.sql. <<<
-  editorEmail: 'aritra@example.com',   // Aritra  — full edit
-  adminEmail:  'pratyush@example.com', // Pratyush — read-only oversight
+  // >>> the two emails you sign up with. Must match supabase/schema.sql. <<<
+  editorEmail: 'aritra@example.com',       // Aritra  — full edit  (<<< set his real email)
+  adminEmail:  'pratyushch9@gmail.com',    // Pratyush — read-only oversight
 };
 const sb = supabase.createClient(CONFIG.url, CONFIG.anon);
 const ROW_ID = 'main';
@@ -497,7 +497,8 @@ async function pushCloud(){
   if(!EDITABLE) return;
   try{
     const { error } = await sb.from('workspace')
-      .upsert({ id:ROW_ID, data:STATE, updated_at:new Date().toISOString(), updated_by:CONFIG.editorEmail });
+      .update({ data:STATE, updated_at:new Date().toISOString(), updated_by:CONFIG.editorEmail })
+      .eq('id', ROW_ID);
     if(error) throw error;
   }catch(e){ console.warn('cloud save failed:', e.message||e); toast('⚠ Cloud save failed — kept locally'); }
 }
