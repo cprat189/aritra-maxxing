@@ -16,16 +16,10 @@ Dashboard → **Authentication** → **Users** → **Add user** → *Create new 
 
 ## 3. Run the schema
 Dashboard → **SQL Editor** → **New query** → paste all of [`schema.sql`](./schema.sql).
-**Before running**, replace the email placeholders (4 spots, marked ⬅) with the exact two emails from step 2. Then **Run**.
+**Before running**, replace `aritra@example.com` (3 spots, marked ⬅) with Aritra's real email. Your admin email (`pratyushch9@gmail.com`) is already filled in. Then **Run**.
 
-## 4. Send me two values
-Dashboard → **Project Settings** → **API**:
-- **Project URL** (looks like `https://abcdefg.supabase.co`)
-- **anon public** key (the long one labelled `anon` / `public`)
+## 4. Set Aritra's email in the app
+Open [`../index.html`](../index.html), find the `CONFIG` block near the top of the `<script>`, and set `editorEmail` to the same email you used above. (URL, anon key, and `adminEmail` are already wired.)
 
-Paste both to me here, plus **Aritra's email** (so I map it to the editor role in the app).
-
-> The `anon` key is safe to share and safe to ship in the app — it's public by design; RLS is what protects the data. **Never** send the `service_role` key.
-
-## What I do next
-I rewire the app's login to Supabase Auth, point persistence at the `workspace` row, subscribe to realtime so you both see live updates, and verify sign-in + read/write/permissions end-to-end. Then you each just open the app and log in with your real account.
+## Done
+Open `index.html` and log in with the account you created in step 2. The app already talks to Supabase Auth, reads/writes the shared `workspace` row, and subscribes to realtime — Aritra edits, your Oversight screen updates live. No `service_role` key is ever used; the public `anon` key + RLS is what protects the data.
