@@ -34,9 +34,8 @@ Open [`../index.html`](../index.html), find the `CONFIG` block near the top of t
 ## Done
 Open `index.html` and log in with the account you created in step 2. The app already talks to Supabase Auth, reads/writes the shared `workspace` row, and subscribes to realtime — Aritra edits, your Oversight screen updates live. No `service_role` key is ever used; the public `anon` key + RLS is what protects the data.
 
-Sendable links:
+Sendable link:
 
 ```text
-Preview: https://cprat189.github.io/aritra-maxxing/?preview=1
-Login:   https://cprat189.github.io/aritra-maxxing/
+https://cprat189.github.io/aritra-maxxing/
 ```

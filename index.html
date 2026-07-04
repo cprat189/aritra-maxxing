@@ -319,12 +319,11 @@
     <label for="p">Password</label>
     <input id="p" name="p" type="password" placeholder="••••••••">
     <button class="go" type="submit">Enter workspace &rarr;</button>
-    <button type="button" id="previewBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">Preview without login</button>
+    <button type="button" id="magicBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">Email me a login link</button>
     <div class="login-err" id="loginErr"></div>
     <p class="login-note">Two accounts: <b style="color:var(--good)">Aritra</b> (editor — full edit) and
-      <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Accounts are provisioned in Supabase
-      with email confirmation disabled for those users; edits sync live and data stays private behind row-level security.
-      Preview mode is read-only and uses seed data.</p>
+      <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Use the password if it is already set,
+      or send yourself a login link. Data stays private behind row-level security.</p>
   </form>
 </div>
 
@@ -490,7 +489,6 @@ function setPath(o,p,v){ const ks=p.split('.'); const last=ks.pop(); let t=o; fo
 
 let applyingRemote=false, pushT=null, cloudSeeded=false;
 async function loadCloud(){
-  if(ROLE==='preview') return loadSeedData();
   try{
     const { data, error } = await sb.from('workspace').select('data,updated_at').eq('id',ROW_ID).maybeSingle();
     if(error) throw error;
@@ -515,7 +513,6 @@ async function pushCloud(){
   }catch(e){ console.warn('cloud save failed:', e.message||e); toast('⚠ Cloud save failed — kept locally'); }
 }
 function subscribeCloud(){
-  if(ROLE==='preview') return;
   if(EDITABLE) return; // only the editor writes, so only the admin needs to listen
   sb.channel('workspace-'+ROW_ID)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'workspace',filter:'id=eq.'+ROW_ID},payload=>{
@@ -1005,13 +1002,11 @@ function doAction(act){
     inp.onchange=()=>{ const f=inp.files[0]; if(!f)return; const rd=new FileReader();
       rd.onload=()=>{ try{ STATE=JSON.parse(rd.result); ensureSchema(); save(); toast('⬆ <b>Snapshot loaded</b>'); go(ACTIVE); }catch(e){ toast('❌ Invalid file'); } };
       rd.readAsText(f); }; inp.click(); }
-  else if(act==='pull'){ if(ROLE==='preview'){ awaitMaybe(loadSeedData()); return; }
-    if(!confirm('Reload the latest from the cloud? Unsaved local edits will be replaced.'))return;
+  else if(act==='pull'){ if(!confirm('Reload the latest from the cloud? Unsaved local edits will be replaced.'))return;
     loadCloud().then(d=>{ STATE=d; ensureSchema(); localStorage.setItem(KEY,JSON.stringify(STATE)); toast('↻ <b>Synced from cloud</b>'); go(ACTIVE); refreshStats(); }); }
   else if(act==='print'){ window.print(); }
-  else if(act==='logout'){ if(ROLE==='preview') location.reload(); else sb.auth.signOut().finally(()=>location.reload()); }
+  else if(act==='logout'){ sb.auth.signOut().finally(()=>location.reload()); }
 }
-function awaitMaybe(p){ return Promise.resolve(p).then(d=>{ STATE=d; ensureSchema(); localStorage.setItem(KEY,JSON.stringify(STATE)); toast('↻ <b>Preview reset</b>'); go(ACTIVE); refreshStats(); }); }
 
 /* =================================================================
    TOAST + KEYS
@@ -1052,12 +1047,21 @@ $('#loginForm').addEventListener('submit',async e=>{
   }
   handleSession(data.session);
 });
-$('#previewBtn').addEventListener('click',()=>startApp('preview','preview@local'));
+$('#magicBtn').addEventListener('click',async ()=>{
+  const err=$('#loginErr'); const email=$('#u').value.trim();
+  if(!roleFor(email)){ err.textContent='Use the exact workspace email Pratyush provisioned for you.'; return; }
+  err.textContent='Sending login link…';
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options:{ emailRedirectTo: location.origin + location.pathname }
+  });
+  err.textContent = error ? error.message : 'Login link sent. Open it on this device to enter the workspace.';
+});
 $('#logoutBtn').onclick=()=>doAction('logout');
 
 async function startApp(role,email){
   ROLE=role; CURRENT_EMAIL=(email||'').trim().toLowerCase(); EDITABLE=(role==='editor'); document.body.dataset.role=role;
-  $('#roleBadge').textContent = role==='admin'?'admin · oversight':role==='preview'?'preview':'editor';
+  $('#roleBadge').textContent = role==='admin'?'admin · oversight':'editor';
   STATE=await loadCloud(); ensureSchema(); lastLevel=STATE.meta.level||1;
   if(EDITABLE){ markActive(); if(!cloudSeeded) await pushCloud(); } // seed the shared row on first ever run
   localStorage.setItem(KEY, JSON.stringify(STATE));
@@ -1081,7 +1085,6 @@ async function startApp(role,email){
 
 /* boot — resume an existing Supabase session if one is stored */
 (async function(){
-  if(new URLSearchParams(location.search).has('preview')) return startApp('preview','preview@local');
   try{ const { data } = await sb.auth.getSession();
     if(data.session && roleFor(data.session.user.email)) return handleSession(data.session);
   }catch(e){ console.warn(e); }

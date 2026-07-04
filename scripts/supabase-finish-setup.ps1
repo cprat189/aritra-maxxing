@@ -89,5 +89,4 @@ Write-Host "Updated supabase/schema.sql editor policies"
 
 Write-Host ""
 Write-Host "Done. After committing/pushing these files, send:"
-Write-Host "Preview: https://cprat189.github.io/aritra-maxxing/?preview=1"
-Write-Host "Login:   https://cprat189.github.io/aritra-maxxing/"
+Write-Host "https://cprat189.github.io/aritra-maxxing/"

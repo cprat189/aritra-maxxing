@@ -11,10 +11,10 @@ Obsidian-style dark workspace: a left-nav shell, a command palette (`Ctrl/⌘ K`
 
 | Role | Account | Can do |
 |---|---|---|
-| **Editor** (Aritra) | his email + password | Full edit — everything, everywhere |
-| **Admin** (accountability partner) | your email + password | Read-only oversight of Aritra's live progress |
+| **Editor** (Aritra) | his email + password or email login link | Full edit — everything, everywhere |
+| **Admin** (accountability partner) | your email + password or email login link | Read-only oversight of Aritra's live progress |
 
-Two accounts only — the app rejects any other email. Passwords are managed by Supabase Auth (hashed server-side); the repo never stores them.
+Accounts are managed by Supabase Auth (hashed server-side); the repo never stores passwords. If a password does not work, use **Email me a login link** on the login page.
 
 ## Setup (one time)
 
@@ -25,15 +25,7 @@ Full step-by-step is in **[`supabase/SETUP.md`](supabase/SETUP.md)**. The short 
    - `index.html` → the `CONFIG` block → `editorEmail`.
 2. **Run the schema:** Supabase dashboard → **SQL Editor** → paste [`supabase/schema.sql`](supabase/schema.sql) → **Run**.
 3. **Create the two users:** dashboard → **Authentication → Users → Add user**, with **"Auto Confirm User"** checked — once for Aritra, once for you.
-4. Open `index.html` and log in. Aritra edits; your Oversight screen updates live.
-
-Public preview link:
-
-```text
-https://cprat189.github.io/aritra-maxxing/?preview=1
-```
-
-Live login link:
+4. Open the live login link. Aritra edits; your Oversight screen updates live.
 
 ```text
 https://cprat189.github.io/aritra-maxxing/
