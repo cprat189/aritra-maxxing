@@ -297,6 +297,7 @@
   @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
   @media print{ .topbar,.side,#notes,#palette{display:none!important;} #app{display:block!important;} .main{overflow:visible;} }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -313,15 +314,16 @@
       </svg>
       <div><b>aritra-maxxing</b><span>operating console</span></div>
     </div>
-    <label for="u">Username</label>
-    <input id="u" name="u" type="text" autocapitalize="none" spellcheck="false" placeholder="username">
+    <label for="u">Email</label>
+    <input id="u" name="u" type="email" autocapitalize="none" spellcheck="false" placeholder="you@email.com">
     <label for="p">Password</label>
     <input id="p" name="p" type="password" placeholder="••••••••">
     <button class="go" type="submit">Enter workspace &rarr;</button>
+    <button type="button" id="signupBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">First time? Create account</button>
     <div class="login-err" id="loginErr"></div>
-    <p class="login-note">Two roles: <b style="color:var(--info)">admin</b> (accountability oversight, read-only) and
-      <b style="color:var(--good)">editor</b> (Aritra — full edit). This is a soft gate on a public page, not real
-      security — it separates roles, it doesn't guard secrets.</p>
+    <p class="login-note">Two accounts: <b style="color:var(--good)">Aritra</b> (editor — full edit) and
+      <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Real logins backed by Supabase; edits
+      sync live between you and the data is private behind row-level security.</p>
   </form>
 </div>
 
@@ -368,17 +370,23 @@
 
 <script>
 /* =================================================================
-   AUTH  (soft, client-side — SHA-256 of "username:password")
+   AUTH + CLOUD  (real accounts via Supabase; live-synced shared row)
    ================================================================= */
-const USERS = [
-  { u:'pratyush', role:'admin',  h:'aa7923f2b2e05343a3d00a0fcbd0ff09f947dd28e61ba3f7a2ae9cdb272189f2' },
-  { u:'aritra',   role:'editor', h:'0c8bc1af18f97e469964c833d0a56a7ed1eca633612ac81ec181096635160345' },
-];
-async function sha256(s){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+const CONFIG = {
+  url:  'https://fjjhrpyszzjbdeoahvqv.supabase.co',
+  anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamhycHlzenpqYmRlb2FodnF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTEyNTEsImV4cCI6MjA5ODY4NzI1MX0.yNJONh2npE5RW55AKmhIQ7PstyBWmQPWz4t5X5TO7cE',
+  // >>> the two emails you sign up with. Must match supabase-setup.sql. <<<
+  editorEmail: 'aritra@example.com',   // Aritra  — full edit
+  adminEmail:  'pratyush@example.com', // Pratyush — read-only oversight
+};
+const sb = supabase.createClient(CONFIG.url, CONFIG.anon);
+const ROW_ID = 'main';
+function roleFor(email){
+  email=(email||'').trim().toLowerCase();
+  if(email===CONFIG.editorEmail.toLowerCase()) return 'editor';
+  if(email===CONFIG.adminEmail.toLowerCase())  return 'admin';
+  return null;
 }
-const SESSION_KEY='am-session-v2';
 
 /* =================================================================
    DEFAULT DATA  (seed — Aritra fills the rest in)
@@ -472,16 +480,45 @@ const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','
 function getPath(o,p){ return p.split('.').reduce((a,k)=>a==null?a:a[k], o); }
 function setPath(o,p,v){ const ks=p.split('.'); const last=ks.pop(); let t=o; for(const k of ks) t=t[k]; t[last]=v; }
 
-async function loadState(){
+let applyingRemote=false, pushT=null, cloudSeeded=false;
+async function loadCloud(){
+  try{
+    const { data, error } = await sb.from('workspace').select('data,updated_at').eq('id',ROW_ID).maybeSingle();
+    if(error) throw error;
+    if(data && data.data && Object.keys(data.data).length){ cloudSeeded=true; return data.data; }
+  }catch(e){ console.warn('cloud load failed:', e.message||e); }
+  // fallbacks while offline / before first seed
   const local=localStorage.getItem(KEY);
   if(local){ try{ return JSON.parse(local); }catch(e){} }
   try{ const r=await fetch('data.json',{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULT_DATA));
 }
+async function pushCloud(){
+  if(!EDITABLE) return;
+  try{
+    const { error } = await sb.from('workspace')
+      .upsert({ id:ROW_ID, data:STATE, updated_at:new Date().toISOString(), updated_by:CONFIG.editorEmail });
+    if(error) throw error;
+  }catch(e){ console.warn('cloud save failed:', e.message||e); toast('⚠ Cloud save failed — kept locally'); }
+}
+function subscribeCloud(){
+  if(EDITABLE) return; // only the editor writes, so only the admin needs to listen
+  sb.channel('workspace-'+ROW_ID)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'workspace',filter:'id=eq.'+ROW_ID},payload=>{
+      const row=payload.new; if(!row || !row.data) return;
+      applyingRemote=true;
+      STATE=row.data; ensureSchema(); localStorage.setItem(KEY, JSON.stringify(STATE));
+      applyingRemote=false;
+      go(ACTIVE); refreshStats();
+      toast('↻ <b>Updated by Aritra</b>');
+    })
+    .subscribe();
+}
 function ensureSchema(){ for(const k in DEFAULT_DATA){ if(STATE[k]===undefined) STATE[k]=JSON.parse(JSON.stringify(DEFAULT_DATA[k])); }
   if(!STATE.meta) STATE.meta=JSON.parse(JSON.stringify(DEFAULT_DATA.meta));
   if(!STATE.notes) STATE.notes={}; if(!STATE.meta.activity) STATE.meta.activity=[]; }
-function save(){ STATE.meta.updatedAt=Date.now(); localStorage.setItem(KEY, JSON.stringify(STATE)); }
+function save(){ STATE.meta.updatedAt=Date.now(); localStorage.setItem(KEY, JSON.stringify(STATE));
+  if(EDITABLE && !applyingRemote){ clearTimeout(pushT); pushT=setTimeout(pushCloud, 600); } }
 function logActivity(text){ STATE.meta.activity.unshift({ ts:Date.now(), text }); STATE.meta.activity=STATE.meta.activity.slice(0,60); }
 function markActive(){
   const today=new Date().toISOString().slice(0,10), last=STATE.meta.lastActive;
@@ -826,7 +863,7 @@ function renderOversight(){
     </div>
     <div class="section-title"><span class="st-ic">◈</span><h2>Section breakdown</h2></div>
     <div class="card">${progRows(P)}</div>
-    <p style="font-size:11.5px;color:var(--muted);margin-top:14px">You see this from Aritra\'s exported snapshot. Ask him to hit <b>Export snapshot</b> and commit <span class="mono">data.json</span> (or use <b>Pull from repo</b>) to refresh.</p>
+    <p style="font-size:11.5px;color:var(--muted);margin-top:14px"><span class="mono" style="color:var(--good)">● live</span> — Aritra\'s edits sync here automatically. No refresh needed.</p>
   </div>`;
 }
 function timeago(ts){ const s=(Date.now()-ts)/1000; if(s<60)return'now'; if(s<3600)return Math.floor(s/60)+'m'; if(s<86400)return Math.floor(s/3600)+'h'; return Math.floor(s/86400)+'d'; }
@@ -928,7 +965,7 @@ function palCommands(){
   if(ROLE==='admin') cmds.unshift({ic:'◈',label:'Go to Oversight',sub:'section',run:()=>go('oversight')});
   if(EDITABLE) cmds.push({ic:'⬇',label:'Export snapshot (data.json)',sub:'action',run:()=>doAction('export')},
     {ic:'⬆',label:'Import snapshot',sub:'action',run:()=>doAction('import')});
-  cmds.push({ic:'↻',label:'Pull from repo',sub:'action',run:()=>doAction('pull')},
+  cmds.push({ic:'↻',label:'Sync from cloud',sub:'action',run:()=>doAction('pull')},
     {ic:'🖨',label:'Print / PDF',sub:'action',run:()=>doAction('print')},
     {ic:'⏻',label:'Log out',sub:'action',run:()=>doAction('logout')});
   return cmds;
@@ -954,10 +991,10 @@ function doAction(act){
     inp.onchange=()=>{ const f=inp.files[0]; if(!f)return; const rd=new FileReader();
       rd.onload=()=>{ try{ STATE=JSON.parse(rd.result); ensureSchema(); save(); toast('⬆ <b>Snapshot loaded</b>'); go(ACTIVE); }catch(e){ toast('❌ Invalid file'); } };
       rd.readAsText(f); }; inp.click(); }
-  else if(act==='pull'){ if(!confirm('Replace current data with the committed data.json from the repo? Unsaved local edits will be lost.'))return;
-    fetch('data.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(d=>{ STATE=d; ensureSchema(); save(); toast('↻ <b>Pulled from repo</b>'); go(ACTIVE); }).catch(()=>toast('No data.json in repo yet')); }
+  else if(act==='pull'){ if(!confirm('Reload the latest from the cloud? Unsaved local edits will be replaced.'))return;
+    loadCloud().then(d=>{ STATE=d; ensureSchema(); localStorage.setItem(KEY,JSON.stringify(STATE)); toast('↻ <b>Synced from cloud</b>'); go(ACTIVE); refreshStats(); }); }
   else if(act==='print'){ window.print(); }
-  else if(act==='logout'){ localStorage.removeItem(SESSION_KEY); location.reload(); }
+  else if(act==='logout'){ sb.auth.signOut().finally(()=>location.reload()); }
 }
 
 /* =================================================================
@@ -979,23 +1016,38 @@ function updPalSel(){ $$('.pal-item').forEach((el,i)=>el.classList.toggle('sel',
 /* =================================================================
    LOGIN FLOW
    ================================================================= */
-async function tryLogin(u,p){ const h=await sha256(u.trim().toLowerCase()+':'+p);
-  return USERS.find(x=>x.u===u.trim().toLowerCase() && x.h===h); }
+async function handleSession(session){
+  const email=session?.user?.email, role=roleFor(email);
+  if(!role){ await sb.auth.signOut(); $('#loginErr').textContent='This email isn’t on the workspace allowlist.'; return; }
+  startApp(role);
+}
 $('#loginForm').addEventListener('submit',async e=>{
-  e.preventDefault(); const err=$('#loginErr'); err.textContent='';
-  const user=await tryLogin($('#u').value, $('#p').value);
-  if(!user){ err.textContent='Wrong username or password.'; return; }
-  localStorage.setItem(SESSION_KEY,user.role); startApp(user.role);
+  e.preventDefault(); const err=$('#loginErr'); err.textContent='Signing in…';
+  const email=$('#u').value.trim(), password=$('#p').value;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){ err.textContent=error.message; return; }
+  handleSession(data.session);
+});
+$('#signupBtn').addEventListener('click',async ()=>{
+  const err=$('#loginErr'); const email=$('#u').value.trim(), password=$('#p').value;
+  if(!roleFor(email)){ err.textContent='Only the two workspace emails can register.'; return; }
+  if(password.length<6){ err.textContent='Pick a password of at least 6 characters.'; return; }
+  err.textContent='Creating account…';
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error){ err.textContent=error.message; return; }
+  if(data.session) handleSession(data.session);
+  else err.textContent='Account created. Now hit “Enter workspace”.';
 });
 $('#logoutBtn').onclick=()=>doAction('logout');
 
 async function startApp(role){
   ROLE=role; EDITABLE=(role==='editor'); document.body.dataset.role=role;
   $('#roleBadge').textContent = role==='admin'?'admin · oversight':'editor';
-  STATE=await loadState(); ensureSchema(); lastLevel=STATE.meta.level||1;
-  if(EDITABLE) markActive();
-  save();
+  STATE=await loadCloud(); ensureSchema(); lastLevel=STATE.meta.level||1;
+  if(EDITABLE){ markActive(); if(!cloudSeeded) await pushCloud(); } // seed the shared row on first ever run
+  localStorage.setItem(KEY, JSON.stringify(STATE));
   document.body.classList.add('ready'); $('#login').style.display='none';
+  subscribeCloud();
   buildNav(); bindEditing();
   go(role==='admin'?'oversight':'dashboard');
   refreshStats();
@@ -1012,9 +1064,12 @@ async function startApp(role){
     ctx.globalAlpha=1; if(!reduce||!W) requestAnimationFrame(d); })();
 })();
 
-/* boot */
-(function(){ const s=localStorage.getItem(SESSION_KEY);
-  if(s && USERS.some(u=>u.role===s)) startApp(s); else $('#u').focus();
+/* boot — resume an existing Supabase session if one is stored */
+(async function(){
+  try{ const { data } = await sb.auth.getSession();
+    if(data.session && roleFor(data.session.user.email)) return handleSession(data.session);
+  }catch(e){ console.warn(e); }
+  $('#u').focus();
 })();
 </script>
 </body>

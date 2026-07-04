@@ -4,28 +4,31 @@ An **interactive, gated, editable operating console** for Aritra Bhattacharya �
 
 Obsidian-style dark workspace: a left-nav shell, a command palette (`Ctrl/⌘ K`), inline-editable everything, gamified progress (XP · levels · day streak), a drag-and-drop recruiting Kanban, a live constellation graph, per-section notes, and a read-only **accountability dashboard** for his partner.
 
-- **Live app:** https://cprat189.github.io/aritra-maxxing/
-- Single self-contained `index.html` — no build, no dependencies. Data lives in the browser (localStorage) and syncs via a `data.json` snapshot.
+- Single self-contained `index.html` (plus the Supabase JS client from a CDN). No build step.
+- **Real logins + live sync** via [Supabase](https://supabase.com): one shared workspace row, both of you read it, **only Aritra can write** (enforced by row-level security, not just the UI). Edits appear on the other person's screen automatically.
 
 ## Logins
 
-| Role | Username | Password | Can do |
-|---|---|---|---|
-| **Editor** (Aritra) | `aritra` | `godawgs-2027` | Full edit — everything, everywhere |
-| **Admin** (accountability partner) | `pratyush` | `northstar-2026` | Read-only oversight of Aritra's live progress |
+| Role | Account | Can do |
+|---|---|---|
+| **Editor** (Aritra) | his email + password | Full edit — everything, everywhere |
+| **Admin** (accountability partner) | your email + password | Read-only oversight of Aritra's live progress |
 
-> ⚠️ **This is a soft gate, not real security.** GitHub Pages is a static host with no server, so the login separates *roles* and adds friction — it does **not** protect secrets. Anyone technical could bypass it by reading the page source. Don't store anything sensitive here. (Passwords are stored as SHA-256 hashes, not plaintext, but that's hygiene, not protection.)
+Two accounts only — the app rejects any other email. Passwords are managed by Supabase Auth (hashed server-side); the repo never stores them.
 
-## How "viewable by the partner" works
+## Setup (one time)
 
-There's no server, so progress is shared via a snapshot file:
+Everything lives in your Supabase project (URL + anon key are already wired into `index.html`).
 
-1. Aritra edits freely → autosaves to **his browser** (localStorage).
-2. He clicks **Export snapshot** → downloads `data.json` (also copied to clipboard).
-3. That `data.json` gets committed to this repo (drag-drop upload in GitHub's web UI works).
-4. The admin opens the app and hits **Pull from repo** (or just loads it on a fresh browser) to see the latest.
+1. **Pick the two emails** you'll each log in with. Put them in **two** places:
+   - `supabase-setup.sql` → replace `aritra@example.com` in the three RLS policies.
+   - `index.html` → the `CONFIG` block near the top of the `<script>`: set `editorEmail` (Aritra) and `adminEmail` (you).
+2. **Run the schema:** Supabase dashboard → **SQL Editor** → paste all of `supabase-setup.sql` → **Run**. This creates the `workspace` table, the RLS policies, and turns on realtime.
+3. **Turn off email confirmation** (so signup is instant): dashboard → **Authentication → Providers → Email** → disable *"Confirm email"* → save.
+4. **Create the two accounts:** open the app, type each email + a password, and click **"First time? Create account"** — once for Aritra, once for you.
+5. Done. Aritra edits; your screen updates live.
 
-The committed `data.json` in this repo is also the seed a brand-new browser loads first.
+> The committed `data.json` is only a first-run seed. Once the cloud row exists, it's the source of truth. **Export snapshot** still works as a manual backup.
 
 ## What's inside
 
