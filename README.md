@@ -15,6 +15,7 @@ Obsidian-style dark workspace: a left-nav shell, a command palette (`Ctrl/⌘ K`
 | **Admin** (accountability partner) | your email + password or email login link | Read-only oversight of Aritra's live progress |
 
 Accounts are managed by Supabase Auth (hashed server-side); the repo never stores passwords. If a password does not work, use **Email me a login link** on the login page.
+If the emailed link opens `localhost:3000`, copy the full URL from the browser address bar and paste it into **If the email opens localhost** on the real login page.
 
 ## Setup (one time)
 

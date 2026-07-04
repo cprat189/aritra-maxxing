@@ -21,6 +21,7 @@ Dashboard → **Authentication** → **URL Configuration**:
 - **Redirect URLs:** add `https://cprat189.github.io/aritra-maxxing/`
 
 If this is still set to `http://localhost:3000`, email login links will open a dead localhost page before the app can load.
+The app includes a recovery field for this: copy the full `localhost:3000/#...` URL from the browser address bar and paste it into **If the email opens localhost** on the real login page.
 
 If users already exist but login says the account is not confirmed, open each user in **Authentication → Users** and confirm the email, or run the PowerShell finisher from the repo root with your Supabase `service_role` key:
 

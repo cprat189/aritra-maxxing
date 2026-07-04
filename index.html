@@ -320,10 +320,14 @@
     <input id="p" name="p" type="password" placeholder="••••••••">
     <button class="go" type="submit">Enter workspace &rarr;</button>
     <button type="button" id="magicBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">Email me a login link</button>
+    <label for="magicUrl">If the email opens localhost</label>
+    <input id="magicUrl" name="magicUrl" type="url" autocapitalize="none" spellcheck="false" placeholder="paste the full localhost URL here">
+    <button type="button" id="magicUrlBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">Use pasted login link</button>
     <div class="login-err" id="loginErr"></div>
     <p class="login-note">Two accounts: <b style="color:var(--good)">Aritra</b> (editor — full edit) and
       <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Use the password if it is already set,
-      or send yourself a login link. Data stays private behind row-level security.</p>
+      or send yourself a login link. If the email opens a dead localhost page, paste that full URL above.
+      Data stays private behind row-level security.</p>
   </form>
 </div>
 
@@ -1045,6 +1049,38 @@ function showAuthLinkError(){
   history.replaceState(null,'',location.pathname);
   return true;
 }
+function paramsFromAuthUrl(raw){
+  let text=(raw||'').trim();
+  if(!text) return null;
+  try{
+    const u=new URL(text);
+    text = (u.hash && u.hash.length>1) ? u.hash.slice(1) : u.search.replace(/^\?/,'');
+  }catch(e){
+    text = text.replace(/^#/,'').replace(/^\?/,'');
+  }
+  return new URLSearchParams(text);
+}
+async function useAuthUrl(raw){
+  const err=$('#loginErr'), params=paramsFromAuthUrl(raw);
+  if(!params){ err.textContent='Paste the full URL from the browser address bar.'; return; }
+  const code=params.get('error_code') || params.get('error');
+  if(code){
+    const desc=(params.get('error_description')||code).replace(/\+/g,' ');
+    err.textContent = code==='otp_expired'
+      ? 'That email link is expired or was already used. Send a fresh link, open the newest email, then paste the full localhost URL here.'
+      : desc;
+    return;
+  }
+  const access_token=params.get('access_token'), refresh_token=params.get('refresh_token');
+  if(!access_token || !refresh_token){
+    err.textContent='That URL does not contain a Supabase login session. Send a fresh link and paste the full localhost URL after it opens.';
+    return;
+  }
+  err.textContent='Completing login...';
+  const { data, error } = await sb.auth.setSession({ access_token, refresh_token });
+  if(error){ err.textContent=error.message; return; }
+  handleSession(data.session);
+}
 $('#loginForm').addEventListener('submit',async e=>{
   e.preventDefault(); const err=$('#loginErr'); err.textContent='Signing in…';
   const email=$('#u').value.trim(), password=$('#p').value;
@@ -1070,6 +1106,7 @@ $('#magicBtn').addEventListener('click',async ()=>{
   });
   err.textContent = error ? error.message : 'Login link sent. Open it on this device to enter the workspace.';
 });
+$('#magicUrlBtn').addEventListener('click',()=>useAuthUrl($('#magicUrl').value));
 $('#logoutBtn').onclick=()=>doAction('logout');
 
 async function startApp(role,email){
@@ -1098,6 +1135,12 @@ async function startApp(role,email){
 
 /* boot — resume an existing Supabase session if one is stored */
 (async function(){
+  const currentParams = paramsFromAuthUrl(location.href);
+  if(currentParams && currentParams.get('access_token') && currentParams.get('refresh_token')){
+    await useAuthUrl(location.href);
+    history.replaceState(null,'',location.pathname);
+    return;
+  }
   const hadAuthError = showAuthLinkError();
   try{ const { data } = await sb.auth.getSession();
     if(data.session && roleFor(data.session.user.email)) return handleSession(data.session);
