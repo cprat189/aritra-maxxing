@@ -27,6 +27,30 @@ Full step-by-step is in **[`supabase/SETUP.md`](supabase/SETUP.md)**. The short 
 3. **Create the two users:** dashboard → **Authentication → Users → Add user**, with **"Auto Confirm User"** checked — once for Aritra, once for you.
 4. Open `index.html` and log in. Aritra edits; your Oversight screen updates live.
 
+Public preview link:
+
+```text
+https://cprat189.github.io/aritra-maxxing/?preview=1
+```
+
+Live login link:
+
+```text
+https://cprat189.github.io/aritra-maxxing/
+```
+
+If you have the Supabase `service_role` key, the final account-confirmation and static hosting step can be finished from PowerShell:
+
+```powershell
+.\scripts\supabase-finish-setup.ps1 `
+  -ServiceRoleKey "YOUR_SERVICE_ROLE_KEY" `
+  -AritraEmail "aritra@real-email.com" `
+  -AritraPassword "TEMP_PASSWORD_FOR_ARITRA" `
+  -AdminPassword "TEMP_PASSWORD_FOR_PRATYUSH"
+```
+
+That command confirms/resets both Supabase Auth users and replaces the local Aritra email placeholder.
+
 > The committed `data.json` is only a first-run seed. Once the cloud row has data, it's the source of truth. **Export snapshot** still works as a manual backup.
 
 ## What's inside
