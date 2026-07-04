@@ -319,11 +319,12 @@
     <label for="p">Password</label>
     <input id="p" name="p" type="password" placeholder="••••••••">
     <button class="go" type="submit">Enter workspace &rarr;</button>
-    <button type="button" id="signupBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">First time? Create account</button>
+    <button type="button" id="previewBtn" style="width:100%;margin-top:10px;background:transparent;border:1px solid var(--line2);color:var(--text2);padding:11px;border-radius:var(--r-sm);font-size:12.5px;cursor:pointer;font-family:var(--mono);letter-spacing:.04em">Preview without login</button>
     <div class="login-err" id="loginErr"></div>
     <p class="login-note">Two accounts: <b style="color:var(--good)">Aritra</b> (editor — full edit) and
-      <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Real logins backed by Supabase; edits
-      sync live between you and the data is private behind row-level security.</p>
+      <b style="color:var(--info)">Pratyush</b> (admin — read-only oversight). Accounts are provisioned in Supabase
+      with email confirmation disabled for those users; edits sync live and data stays private behind row-level security.
+      Preview mode is read-only and uses seed data.</p>
   </form>
 </div>
 
@@ -375,16 +376,23 @@
 const CONFIG = {
   url:  'https://fjjhrpyszzjbdeoahvqv.supabase.co',
   anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamhycHlzenpqYmRlb2FodnF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTEyNTEsImV4cCI6MjA5ODY4NzI1MX0.yNJONh2npE5RW55AKmhIQ7PstyBWmQPWz4t5X5TO7cE',
-  // >>> the two emails you sign up with. Must match supabase/schema.sql. <<<
-  editorEmail: 'aritra@example.com',       // Aritra  — full edit  (<<< set his real email)
+  // Optional: set Aritra's real email here. If left blank/placeholder, any non-admin authenticated user is treated as editor.
+  // Supabase row-level security still decides who can actually read/write the shared workspace row.
+  editorEmail: '',                          // Aritra  — full edit
   adminEmail:  'pratyushch9@gmail.com',    // Pratyush — read-only oversight
 };
 const sb = supabase.createClient(CONFIG.url, CONFIG.anon);
 const ROW_ID = 'main';
+function configuredEditorEmail(){
+  const email=(CONFIG.editorEmail||'').trim().toLowerCase();
+  return email && email!=='aritra@example.com' ? email : '';
+}
 function roleFor(email){
   email=(email||'').trim().toLowerCase();
-  if(email===CONFIG.editorEmail.toLowerCase()) return 'editor';
   if(email===CONFIG.adminEmail.toLowerCase())  return 'admin';
+  const editorEmail=configuredEditorEmail();
+  if(editorEmail) return email===editorEmail ? 'editor' : null;
+  if(email) return 'editor';
   return null;
 }
 
@@ -474,7 +482,7 @@ const DEFAULT_DATA = {
    STATE + PERSISTENCE
    ================================================================= */
 const KEY='aritra-maxxing-v2';
-let STATE=null, ROLE=null, EDITABLE=false, ACTIVE='dashboard', graphRAF=null, lastLevel=1;
+let STATE=null, ROLE=null, CURRENT_EMAIL='', EDITABLE=false, ACTIVE='dashboard', graphRAF=null, lastLevel=1;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 function getPath(o,p){ return p.split('.').reduce((a,k)=>a==null?a:a[k], o); }
@@ -482,6 +490,7 @@ function setPath(o,p,v){ const ks=p.split('.'); const last=ks.pop(); let t=o; fo
 
 let applyingRemote=false, pushT=null, cloudSeeded=false;
 async function loadCloud(){
+  if(ROLE==='preview') return loadSeedData();
   try{
     const { data, error } = await sb.from('workspace').select('data,updated_at').eq('id',ROW_ID).maybeSingle();
     if(error) throw error;
@@ -490,6 +499,9 @@ async function loadCloud(){
   // fallbacks while offline / before first seed
   const local=localStorage.getItem(KEY);
   if(local){ try{ return JSON.parse(local); }catch(e){} }
+  return loadSeedData();
+}
+async function loadSeedData(){
   try{ const r=await fetch('data.json',{cache:'no-store'}); if(r.ok) return await r.json(); }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULT_DATA));
 }
@@ -497,12 +509,13 @@ async function pushCloud(){
   if(!EDITABLE) return;
   try{
     const { error } = await sb.from('workspace')
-      .update({ data:STATE, updated_at:new Date().toISOString(), updated_by:CONFIG.editorEmail })
+      .update({ data:STATE, updated_at:new Date().toISOString(), updated_by:CURRENT_EMAIL||configuredEditorEmail()||'editor' })
       .eq('id', ROW_ID);
     if(error) throw error;
   }catch(e){ console.warn('cloud save failed:', e.message||e); toast('⚠ Cloud save failed — kept locally'); }
 }
 function subscribeCloud(){
+  if(ROLE==='preview') return;
   if(EDITABLE) return; // only the editor writes, so only the admin needs to listen
   sb.channel('workspace-'+ROW_ID)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'workspace',filter:'id=eq.'+ROW_ID},payload=>{
@@ -992,11 +1005,13 @@ function doAction(act){
     inp.onchange=()=>{ const f=inp.files[0]; if(!f)return; const rd=new FileReader();
       rd.onload=()=>{ try{ STATE=JSON.parse(rd.result); ensureSchema(); save(); toast('⬆ <b>Snapshot loaded</b>'); go(ACTIVE); }catch(e){ toast('❌ Invalid file'); } };
       rd.readAsText(f); }; inp.click(); }
-  else if(act==='pull'){ if(!confirm('Reload the latest from the cloud? Unsaved local edits will be replaced.'))return;
+  else if(act==='pull'){ if(ROLE==='preview'){ awaitMaybe(loadSeedData()); return; }
+    if(!confirm('Reload the latest from the cloud? Unsaved local edits will be replaced.'))return;
     loadCloud().then(d=>{ STATE=d; ensureSchema(); localStorage.setItem(KEY,JSON.stringify(STATE)); toast('↻ <b>Synced from cloud</b>'); go(ACTIVE); refreshStats(); }); }
   else if(act==='print'){ window.print(); }
-  else if(act==='logout'){ sb.auth.signOut().finally(()=>location.reload()); }
+  else if(act==='logout'){ if(ROLE==='preview') location.reload(); else sb.auth.signOut().finally(()=>location.reload()); }
 }
+function awaitMaybe(p){ return Promise.resolve(p).then(d=>{ STATE=d; ensureSchema(); localStorage.setItem(KEY,JSON.stringify(STATE)); toast('↻ <b>Preview reset</b>'); go(ACTIVE); refreshStats(); }); }
 
 /* =================================================================
    TOAST + KEYS
@@ -1019,31 +1034,30 @@ function updPalSel(){ $$('.pal-item').forEach((el,i)=>el.classList.toggle('sel',
    ================================================================= */
 async function handleSession(session){
   const email=session?.user?.email, role=roleFor(email);
-  if(!role){ await sb.auth.signOut(); $('#loginErr').textContent='This email isn’t on the workspace allowlist.'; return; }
-  startApp(role);
+  if(!role){ await sb.auth.signOut(); $('#loginErr').textContent='This email is not on the workspace allowlist.'; return; }
+  startApp(role, email);
 }
 $('#loginForm').addEventListener('submit',async e=>{
   e.preventDefault(); const err=$('#loginErr'); err.textContent='Signing in…';
   const email=$('#u').value.trim(), password=$('#p').value;
+  if(!roleFor(email)){ err.textContent='Use the exact workspace email Pratyush provisioned for you.'; return; }
+  if(!password){ err.textContent='Enter the password from the Supabase user account.'; return; }
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if(error){ err.textContent=error.message; return; }
+  if(error){
+    const msg=(error.message||'').toLowerCase();
+    err.textContent = msg.includes('confirm')
+      ? 'This account exists but is not confirmed yet. In Supabase Auth, open the user and confirm the email.'
+      : error.message;
+    return;
+  }
   handleSession(data.session);
 });
-$('#signupBtn').addEventListener('click',async ()=>{
-  const err=$('#loginErr'); const email=$('#u').value.trim(), password=$('#p').value;
-  if(!roleFor(email)){ err.textContent='Only the two workspace emails can register.'; return; }
-  if(password.length<6){ err.textContent='Pick a password of at least 6 characters.'; return; }
-  err.textContent='Creating account…';
-  const { data, error } = await sb.auth.signUp({ email, password });
-  if(error){ err.textContent=error.message; return; }
-  if(data.session) handleSession(data.session);
-  else err.textContent='Account created. Now hit “Enter workspace”.';
-});
+$('#previewBtn').addEventListener('click',()=>startApp('preview','preview@local'));
 $('#logoutBtn').onclick=()=>doAction('logout');
 
-async function startApp(role){
-  ROLE=role; EDITABLE=(role==='editor'); document.body.dataset.role=role;
-  $('#roleBadge').textContent = role==='admin'?'admin · oversight':'editor';
+async function startApp(role,email){
+  ROLE=role; CURRENT_EMAIL=(email||'').trim().toLowerCase(); EDITABLE=(role==='editor'); document.body.dataset.role=role;
+  $('#roleBadge').textContent = role==='admin'?'admin · oversight':role==='preview'?'preview':'editor';
   STATE=await loadCloud(); ensureSchema(); lastLevel=STATE.meta.level||1;
   if(EDITABLE){ markActive(); if(!cloudSeeded) await pushCloud(); } // seed the shared row on first ever run
   localStorage.setItem(KEY, JSON.stringify(STATE));
@@ -1067,6 +1081,7 @@ async function startApp(role){
 
 /* boot — resume an existing Supabase session if one is stored */
 (async function(){
+  if(new URLSearchParams(location.search).has('preview')) return startApp('preview','preview@local');
   try{ const { data } = await sb.auth.getSession();
     if(data.session && roleFor(data.session.user.email)) return handleSession(data.session);
   }catch(e){ console.warn(e); }

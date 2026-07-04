@@ -14,6 +14,16 @@ Dashboard → **Authentication** → **Users** → **Add user** → *Create new 
 
 > "Auto Confirm" matters — without it, login is blocked pending email verification.
 
+If users already exist but login says the account is not confirmed, open each user in **Authentication → Users** and confirm the email, or run the PowerShell finisher from the repo root with your Supabase `service_role` key:
+
+```powershell
+.\scripts\supabase-finish-setup.ps1 `
+  -ServiceRoleKey "YOUR_SERVICE_ROLE_KEY" `
+  -AritraEmail "aritra@real-email.com" `
+  -AritraPassword "TEMP_PASSWORD_FOR_ARITRA" `
+  -AdminPassword "TEMP_PASSWORD_FOR_PRATYUSH"
+```
+
 ## 3. Run the schema
 Dashboard → **SQL Editor** → **New query** → paste all of [`schema.sql`](./schema.sql).
 **Before running**, replace `aritra@example.com` (3 spots, marked ⬅) with Aritra's real email. Your admin email (`pratyushch9@gmail.com`) is already filled in. Then **Run**.
@@ -23,3 +33,10 @@ Open [`../index.html`](../index.html), find the `CONFIG` block near the top of t
 
 ## Done
 Open `index.html` and log in with the account you created in step 2. The app already talks to Supabase Auth, reads/writes the shared `workspace` row, and subscribes to realtime — Aritra edits, your Oversight screen updates live. No `service_role` key is ever used; the public `anon` key + RLS is what protects the data.
+
+Sendable links:
+
+```text
+Preview: https://cprat189.github.io/aritra-maxxing/?preview=1
+Login:   https://cprat189.github.io/aritra-maxxing/
+```
